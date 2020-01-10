@@ -1,5 +1,8 @@
 package com.vladyslav.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -32,6 +36,30 @@ public class Student {
 	@JoinColumn(name="student_detail_id")
 	private StudentDetail studentDetail;
 	
+	@OneToMany(mappedBy="student", cascade= {CascadeType.DETACH, 
+			CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+	private List<Course> course;
+	
+	
+	// add course for student
+	public void add(Course tempCourse) {
+		if(course == null) {
+			course = new ArrayList<>();
+		}
+		
+		course.add(tempCourse);
+		tempCourse.setStudent(this);
+	}
+	
+	
+	public List<Course> getCourse() {
+		return course;
+	}
+
+	public void setCourse(List<Course> course) {
+		this.course = course;
+	}
+
 	public Student() {}
 
 	public Student(String firstName, String lastName, String email) {
