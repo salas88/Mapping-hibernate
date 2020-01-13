@@ -10,7 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -36,21 +37,22 @@ public class Student {
 	@JoinColumn(name="student_detail_id")
 	private StudentDetail studentDetail;
 	
-	@OneToMany(mappedBy="student", cascade= {CascadeType.DETACH, 
+	@ManyToMany(cascade= {CascadeType.DETACH, 
 			CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(name= "student_course",
+			   joinColumns=@JoinColumn(name="id_student"),
+			   inverseJoinColumns=@JoinColumn(name="id_course"))
 	private List<Course> course;
 	
 	
-	// add course for student
-	public void add(Course tempCourse) {
+
+	public void addCourseForStudent(Course tempCourse) {
 		if(course == null) {
 			course = new ArrayList<>();
-		}
+		} else
+			course.add(tempCourse);
 		
-		course.add(tempCourse);
-		tempCourse.setStudent(this);
 	}
-	
 	
 	public List<Course> getCourse() {
 		return course;

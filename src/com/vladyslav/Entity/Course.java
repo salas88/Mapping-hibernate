@@ -11,7 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,10 +28,12 @@ public class Course {
 	@Column(name="title")
 	private String title;
 	
-	@ManyToOne(cascade= {CascadeType.DETACH, 
-			CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name="student_id")
-	private Student student;
+	@ManyToMany(fetch =FetchType.LAZY, cascade= {CascadeType.DETACH, 
+				CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(name="student_course",
+			   joinColumns=@JoinColumn(name = "id_course"),
+			   inverseJoinColumns=@JoinColumn(name = "id_student"))
+	private List<Student> student;
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="id_course")
@@ -44,7 +47,24 @@ public class Course {
 	}
 	
 	
+	public void addStudent(Student tempStudent) {
+		if(student == null) {
+			student = new ArrayList<>();
+		} else
+			student.add(tempStudent);
+	}
 	
+	public List<Student> getStudent() {
+		return student;
+	}
+
+	public void setStudent(List<Student> student) {
+		this.student = student;
+	}
+
+
+
+
 	public List<Review> getReviews() {
 		return reviews;
 	}
@@ -79,13 +99,6 @@ public class Course {
 		this.title = title;
 	}
 
-	public Student getStudent() {
-		return student;
-	}
-
-	public void setStudent(Student student) {
-		this.student = student;
-	}
 
 	@Override
 	public String toString() {
