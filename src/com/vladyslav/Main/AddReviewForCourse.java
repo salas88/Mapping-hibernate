@@ -35,16 +35,8 @@ public class AddReviewForCourse {
 			// start transaction
 			session.beginTransaction();
 			
-//			Student student = new Student("Oleg", "Omeliy", "omeliy33@gmail.com");
-//			
-//			Course course = new Course("Speak English - very eazy");
-//			
-//			session.save(student);
-//			session.save(course);
-//		
-//			course.addStudent(student);
-			
-			Student student =session.get(Student.class, 3);
+			int theId = 3;
+			Student student = session.get(Student.class, theId);
 		
 			List<Course> courses = session.createQuery("from Course").getResultList();
 			
@@ -52,9 +44,10 @@ public class AddReviewForCourse {
 				student.addCourseForStudent(courses.get(i));
 			}
 			
-			
 			session.getTransaction().commit();
+			
 			System.out.println("Done!");
+			
 		}finally {
 			
 			session.close();
